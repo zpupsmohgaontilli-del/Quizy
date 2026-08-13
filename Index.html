@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quizy - सामान्य ज्ञान</title>
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --accent: #00b894;
+      --danger: #ff7675;
+      --warning: #fdcb6e;
+      --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background Doodles */
+    .bg-doodles {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .doodle {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.15;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    .doodle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+    .doodle:nth-child(2) { top: 70%; left: 15%; animation-delay: 2s; }
+    .doodle:nth-child(3) { top: 20%; right: 12%; animation-delay: 4s; }
+    .doodle:nth-child(4) { top: 75%; right: 18%; animation-delay: 1s; }
+    .doodle:nth-child(5) { top: 45%; left: 5%; animation-delay: 3s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 28px;
+      padding: 30px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+      text-align: center;
+      color: white;
+    }
+
+    /* App Title Header */
+    .app-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #a855f7, #3b82f6, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    /* 2D Student Character Animation */
+    .character-container {
+      width: 85px;
+      height: 85px;
+      margin: 0 auto 12px auto;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 3px solid rgba(255,255,255,0.4);
+      animation: pulseCharacter 3s infinite ease-in-out;
+      font-size: 2.8rem;
+      user-select: none;
+    }
+
+    @keyframes pulseCharacter {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .character-happy {
+      animation: celebrate 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes celebrate {
+      0% { transform: translateY(0) scale(1.1); }
+      100% { transform: translateY(-10px) scale(1.1); }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .streak-badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .timer-container {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 10px;
+      transition: width 1s linear, background-color 0.5s ease;
+    }
+
+    /* 3D Flip Card */
+    .card-scene {
+      width: 100%;
+      height: 230px;
+      perspective: 1000px;
+      margin-bottom: 25px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .card.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+      background: white;
+      color: #2d3436;
+    }
+
+    .card-front {
+      border-bottom: 6px solid var(--primary);
+    }
+
+    .card-back {
+      background: #f8f9fa;
+      transform: rotateY(180deg);
+      border-bottom: 6px solid var(--accent);
+    }
+
+    .card-label {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #b2bec3;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .card-text {
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .card-back .card-text {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:active { transform: scale(0.96); }
+
+    .btn-show { background: #00b894; color: white; }
+    .btn-show:hover { background: #00a182; }
+
+    .btn-next { background: #0984e3; color: white; }
+    .btn-next:hover { background: #0773c5; }
+
+    /* Footer Credits Styling */
+    .credits-footer {
+      margin-top: 25px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 15px;
+    }
+
+    .credits-footer strong {
+      color: #ffffff;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake { animation: shake 0.5s ease-in-out; }
+  </style>
+</head>
+<body>
+
+<!-- Animated background icons -->
+<div class="bg-doodles">
+  <div class="doodle">📚</div>
+  <div class="doodle">💡</div>
+  <div class="doodle">🎓</div>
+  <div class="doodle">✏️</div>
+  <div class="doodle">🔬</div>
+</div>
+
+<div class="app-container" id="app">
+  <!-- App Title -->
+  <h1 class="app-title">Quizy 🧠</h1>
+
+  <!-- 2D Student Avatar -->
+  <div class="character-container" id="student-avatar">
+    🧑‍🎓
+  </div>
+
+  <div class="header">
+    <div>⏱️ <span id="timer-text">60</span>s</div>
+    <div class="streak-badge">⚡ Streak: <span id="streak">0</span></div>
+  </div>
+
+  <div class="timer-container">
+    <div class="timer-bar" id="timer-bar"></div>
+  </div>
+
+  <div class="card-scene" onclick="flipCard()">
+    <div class="card" id="card">
+      <div class="card-face card-front">
+        <div class="card-label">प्रश्न (Question)</div>
+        <div class="card-text" id="question">लोड होत आहे...</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-label">उत्तर (Answer)</div>
+        <div class="card-text" id="answer">-</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button class="btn btn-show" onclick="flipCard()">👁️ उत्तर पाहा</button>
+    <button class="btn btn-next" onclick="nextQuestion()">🎲 पुढील प्रश्न</button>
+  </div>
+
+  <!-- Credits Footer -->
+  <div class="credits-footer">
+    © <strong>Vrushabh H. Borkar</strong><br>
+    Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
