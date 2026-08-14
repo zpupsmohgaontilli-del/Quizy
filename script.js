@@ -127,4 +127,23 @@ function nextQuestion() {
 }
 
 // Initial fetch on page load
-loadQuestions();
+async function loadQuestions() {
+  try {
+    const response = await fetch(API_URL, {
+      method: "GET",
+      mode: "cors",
+      redirect: "follow"
+    });
+    
+    questionsList = await response.json();
+    
+    if (questionsList.length > 0) {
+      nextQuestion();
+    } else {
+      document.getElementById('question').innerText = "कोणतेही प्रश्न सापडले नाहीत. कृपया Google Sheet तपासा.";
+    }
+  } catch (error) {
+    document.getElementById('question').innerText = "डेटा लोड करताना त्रुटी आली! API URL तपासा.";
+    console.error("Fetch Error:", error);
+  }
+}
