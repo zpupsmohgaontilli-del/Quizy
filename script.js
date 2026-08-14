@@ -1,4 +1,3 @@
-// Paste your copied Apps Script Web App URL between the quotes below:
 const API_URL = "https://script.google.com/macros/s/AKfycby9ijHFBO9SbVTzijnZNRwDzshNpdQuoGhMHXEMndaPl4hXycg-hp_hU3qNZl8FMrqJyQ/exec";
 
 let questionsList = [];
