@@ -1,4 +1,5 @@
-const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
+// Paste your copied Apps Script Web App URL between the quotes below:
+const API_URL = "https://script.google.com/macros/s/AKfycby9ijHFBO9SbVTzijnZNRwDzshNpdQuoGhMHXEMndaPl4hXycg-hp_hU3qNZl8FMrqJyQ/exec";
 
 let questionsList = [];
 let currentQuestion = null;
@@ -14,10 +15,10 @@ async function loadQuestions() {
     if (questionsList.length > 0) {
       nextQuestion();
     } else {
-      document.getElementById('question').innerText = "कोणतेही प्रश्न सापडले नाहीत.";
+      document.getElementById('question').innerText = "कोणतेही प्रश्न सापडले नाहीत. कृपया Google Sheet तपासा.";
     }
   } catch (error) {
-    document.getElementById('question').innerText = "कनेक्शन एरर! कृपया URL तपासा.";
+    document.getElementById('question').innerText = "डेटा लोड करताना त्रुटी आली! API URL तपासा.";
     console.error(error);
   }
 }
@@ -37,7 +38,7 @@ function startTimer() {
       document.getElementById('app').classList.add('shake');
       
       const avatar = document.getElementById('student-avatar');
-      avatar.innerText = "🤯";
+      if (avatar) avatar.innerText = "🤯";
       
       setTimeout(() => document.getElementById('app').classList.remove('shake'), 500);
     }
@@ -48,16 +49,18 @@ function updateTimerUI() {
   const timerText = document.getElementById('timer-text');
   const timerBar = document.getElementById('timer-bar');
   
-  timerText.innerText = timeLeft;
-  const percentage = (timeLeft / 60) * 100;
-  timerBar.style.width = percentage + "%";
+  if (timerText) timerText.innerText = timeLeft;
+  if (timerBar) {
+    const percentage = (timeLeft / 60) * 100;
+    timerBar.style.width = percentage + "%";
 
-  if (percentage > 50) {
-    timerBar.style.backgroundColor = "var(--accent)";
-  } else if (percentage > 20) {
-    timerBar.style.backgroundColor = "var(--warning)";
-  } else {
-    timerBar.style.backgroundColor = "var(--danger)";
+    if (percentage > 50) {
+      timerBar.style.backgroundColor = "var(--accent)";
+    } else if (percentage > 20) {
+      timerBar.style.backgroundColor = "var(--warning)";
+    } else {
+      timerBar.style.backgroundColor = "var(--danger)";
+    }
   }
 }
 
@@ -67,21 +70,29 @@ function flipCard() {
   const card = document.getElementById('card');
   const avatar = document.getElementById('student-avatar');
 
-  card.classList.toggle('is-flipped');
-  isFlipped = card.classList.contains('is-flipped');
+  if (card) {
+    card.classList.toggle('is-flipped');
+    isFlipped = card.classList.contains('is-flipped');
+  }
 
   if (isFlipped) {
-    avatar.innerText = "🥳";
-    avatar.classList.add('character-happy');
+    if (avatar) {
+      avatar.innerText = "🥳";
+      avatar.classList.add('character-happy');
+    }
 
-    confetti({
-      particleCount: 60,
-      spread: 70,
-      origin: { y: 0.7 }
-    });
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.7 }
+      });
+    }
   } else {
-    avatar.innerText = "🧑‍🎓";
-    avatar.classList.remove('character-happy');
+    if (avatar) {
+      avatar.innerText = "🧑‍🎓";
+      avatar.classList.remove('character-happy');
+    }
   }
 }
 
@@ -90,15 +101,18 @@ function nextQuestion() {
 
   if (isFlipped) {
     streak++;
-    document.getElementById('streak').innerText = streak;
+    const streakElem = document.getElementById('streak');
+    if (streakElem) streakElem.innerText = streak;
   }
 
   const card = document.getElementById('card');
   const avatar = document.getElementById('student-avatar');
 
-  card.classList.remove('is-flipped');
-  avatar.innerText = "🤔";
-  avatar.classList.remove('character-happy');
+  if (card) card.classList.remove('is-flipped');
+  if (avatar) {
+    avatar.innerText = "🤔";
+    avatar.classList.remove('character-happy');
+  }
   isFlipped = false;
 
   setTimeout(() => {
@@ -108,9 +122,10 @@ function nextQuestion() {
     document.getElementById('question').innerText = currentQuestion.question;
     document.getElementById('answer').innerText = currentQuestion.answer;
 
-    avatar.innerText = "🧑‍🎓";
+    if (avatar) avatar.innerText = "🧑‍🎓";
     startTimer();
   }, 250);
 }
 
+// Initial fetch on page load
 loadQuestions();
