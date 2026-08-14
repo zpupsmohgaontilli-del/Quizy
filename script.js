@@ -1,5 +1,4 @@
 const API_URL = "https://script.google.com/macros/s/AKfycby9ijHFBO9SbVTzijnZNRwDzshNpdQuoGhMHXEMndaPl4hXycg-hp_hU3qNZl8FMrqJyQ/exec";
-
 let questionsList = [];
 let currentQuestion = null;
 let timerInterval = null;
