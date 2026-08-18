@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Quizy - Multi-Language Quiz</title>
-  <!-- Canvas Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
@@ -16,12 +15,7 @@
       --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
     body {
       background: var(--bg-gradient);
@@ -36,7 +30,6 @@
       overflow-x: hidden;
     }
 
-    /* Background Doodles */
     .bg-doodles {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -63,7 +56,6 @@
       50% { transform: translateY(-15px) rotate(8deg); }
     }
 
-    /* Main Container */
     .app-container {
       position: relative;
       z-index: 2;
@@ -81,7 +73,6 @@
       margin: auto;
     }
 
-    /* Language Switcher Bar */
     .lang-bar {
       display: flex;
       flex-wrap: wrap;
@@ -94,11 +85,7 @@
       margin-bottom: clamp(10px, 1.8vw, 16px);
     }
 
-    .lang-buttons {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
+    .lang-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
 
     .lang-btn {
       background: rgba(255, 255, 255, 0.18);
@@ -112,9 +99,7 @@
       transition: all 0.2s ease;
     }
 
-    .lang-btn:hover {
-      background: rgba(255, 255, 255, 0.35);
-    }
+    .lang-btn:hover { background: rgba(255, 255, 255, 0.35); }
 
     .lang-btn.active {
       background: var(--accent);
@@ -143,7 +128,6 @@
       cursor: pointer;
     }
 
-    /* App Title */
     .app-title {
       font-size: clamp(1.6rem, 3.8vw, 3rem);
       font-weight: 800;
@@ -155,7 +139,6 @@
       text-transform: uppercase;
     }
 
-    /* Character Animation */
     .character-container {
       width: clamp(60px, 8.5vw, 105px);
       height: clamp(60px, 8.5vw, 105px);
@@ -218,7 +201,6 @@
       transition: width 1s linear, background-color 0.5s ease;
     }
 
-    /* 3D Flip Card */
     .card-scene {
       width: 100%;
       min-height: clamp(180px, 25vh, 340px);
@@ -237,9 +219,7 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.3);
     }
 
-    .card.is-flipped {
-      transform: rotateY(180deg);
-    }
+    .card.is-flipped { transform: rotateY(180deg); }
 
     .card-face {
       position: absolute;
@@ -259,15 +239,8 @@
       overflow-y: auto;
     }
 
-    .card-front {
-      border-bottom: clamp(5px, 0.8vw, 10px) solid var(--primary);
-    }
-
-    .card-back {
-      background: #f8f9fa;
-      transform: rotateY(180deg);
-      border-bottom: clamp(5px, 0.8vw, 10px) solid var(--accent);
-    }
+    .card-front { border-bottom: clamp(5px, 0.8vw, 10px) solid var(--primary); }
+    .card-back { background: #f8f9fa; transform: rotateY(180deg); border-bottom: clamp(5px, 0.8vw, 10px) solid var(--accent); }
 
     .card-label {
       font-size: clamp(0.75rem, 1.3vw, 1.1rem);
@@ -291,7 +264,6 @@
       font-size: clamp(1.25rem, 3vw, 2.3rem);
     }
 
-    /* Action Buttons */
     .button-group {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -316,24 +288,15 @@
     }
 
     .btn:active { transform: scale(0.96); }
-    
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none;
-    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
     .btn-prev { background: var(--prev-btn); color: white; }
     .btn-prev:hover:not(:disabled) { background: #d63031; }
-
     .btn-show { background: var(--accent); color: white; }
     .btn-show:hover { background: #00a182; }
-
     .btn-next { background: #0984e3; color: white; }
     .btn-next:hover { background: #0773c5; }
 
-    /* Footer Credits */
     .credits-footer {
       margin-top: clamp(12px, 1.8vw, 20px);
       font-size: clamp(0.72rem, 1.2vw, 0.95rem);
@@ -343,27 +306,12 @@
       padding-top: clamp(8px, 1.4vw, 14px);
     }
 
-    .credits-footer strong {
-      color: #ffffff;
-    }
+    .credits-footer strong { color: #ffffff; }
 
     @media (max-width: 580px) {
-      .lang-bar {
-        justify-content: center;
-      }
-      .button-group {
-        grid-template-columns: 1fr 1fr;
-      }
-      .btn-show {
-        grid-column: span 2;
-        order: -1;
-      }
-    }
-
-    @media (min-width: 1400px) {
-      .app-container {
-        max-width: 1050px;
-      }
+      .lang-bar { justify-content: center; }
+      .button-group { grid-template-columns: 1fr 1fr; }
+      .btn-show { grid-column: span 2; order: -1; }
     }
   </style>
 </head>
@@ -378,7 +326,6 @@
 </div>
 
 <div class="app-container" id="app">
-  <!-- Top Language Selector Toolbar -->
   <div class="lang-bar">
     <div class="lang-buttons">
       <button class="lang-btn active" id="btn-lang-mr" onclick="changeLanguage('mr')">मराठी</button>
@@ -395,10 +342,7 @@
     </div>
   </div>
 
-  <!-- App Title -->
   <h1 class="app-title">Quizy 🧠</h1>
-
-  <!-- 2D Avatar -->
   <div class="character-container" id="student-avatar">🧑‍🎓</div>
 
   <div class="header">
@@ -410,7 +354,6 @@
     <div class="timer-bar" id="timer-bar"></div>
   </div>
 
-  <!-- 3D Flip Card -->
   <div class="card-scene" onclick="flipCard()">
     <div class="card" id="card">
       <div class="card-face card-front">
@@ -424,14 +367,12 @@
     </div>
   </div>
 
-  <!-- Navigation Action Buttons -->
   <div class="button-group">
     <button class="btn btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>⬅️ मागील प्रश्न</button>
     <button class="btn btn-show" id="btn-show" onclick="flipCard()">👁️ उत्तर पाहा</button>
     <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">पुढील प्रश्न ➡️</button>
   </div>
 
-  <!-- Footer Credits -->
   <div class="credits-footer">
     © <strong>Vrushabh H. Borkar</strong><br>
     <span id="lbl-designation">Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)</span>
@@ -439,10 +380,8 @@
 </div>
 
 <script>
-  // Google Apps Script Web App URL
   const API_URL = "https://script.google.com/macros/s/AKfycby9ijHFBO9SbVTzijnZNRwDzshNpdQuoGhMHXEMndaPl4hXycg-hp_hU3qNZl8FMrqJyQ/exec";
 
-  // UI Translations
   const uiTranslations = {
     mr: {
       lblQuestion: "प्रश्न (Question)",
@@ -452,7 +391,7 @@
       btnNext: "पुढील प्रश्न ➡️",
       lblStreak: "गुण",
       loading: "डेटा लोड होत आहे...",
-      error: "प्रश्न लोड करण्यात त्रुटी आली. ऑफलाइन प्रश्न वापरले जात आहेत.",
+      error: "डेटा लोड होऊ शकला नाही. कृपया रिफ्रेश करा.",
       designation: "पदवीधर शिक्षक, जि. प. उच्च प्राथमिक शाळा, मोहगाव (तिल्ली)"
     },
     hi: {
@@ -463,7 +402,7 @@
       btnNext: "अगला प्रश्न ➡️",
       lblStreak: "स्कोर",
       loading: "डेटा लोड हो रहा है...",
-      error: "प्रश्न लोड करने में त्रुटि। ऑफ़लाइन प्रश्न लोड किए गए।",
+      error: "डेटा लोड नहीं हो सका। कृपया पुनः प्रयास करें।",
       designation: "स्नातक शिक्षक, जि. प. उच्च प्राथमिक विद्यालय, मोहगांव (तल्ली)"
     },
     en: {
@@ -474,44 +413,14 @@
       btnNext: "Next ➡️",
       lblStreak: "Streak",
       loading: "Loading questions...",
-      error: "Error loading online bank. Loaded offline fallback.",
+      error: "Could not load data. Please refresh.",
       designation: "Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)"
     }
   };
 
-  // Built-in offline fallback database
-  const fallbackQuestions = [
-    {
-      mr: { q: "महाराष्ट्राची उपराजधानी कोणती आहे?", a: "नागपूर" },
-      hi: { q: "महाराष्ट्र की उप-राजधानी कौन सी है?", a: "नागपुर" },
-      en: { q: "Which city is the sub-capital of Maharashtra?", a: "Nagpur" }
-    },
-    {
-      mr: { q: "सूर्यमालेतील सर्वात मोठा ग्रह कोणता?", a: "गुरु (Jupiter)" },
-      hi: { q: "सौरमंडल का सबसे बड़ा ग्रह कौन सा है?", a: "बृहस्पति (Jupiter)" },
-      en: { q: "Which is the largest planet in our Solar System?", a: "Jupiter" }
-    },
-    {
-      mr: { q: "मानवी शरीरात एकूण किती हाडे असतात?", a: "२०६" },
-      hi: { q: "मानव शरीर में कुल कितनी हड्डियाँ होती हैं?", a: "२०६" },
-      en: { q: "How many bones are there in the human body?", a: "206" }
-    },
-    {
-      mr: { q: "भारताचे 'मिसाईल मॅन' कोणाला म्हणतात?", a: "डॉ. ए. पी. जे. अब्दुल कलाम" },
-      hi: { q: "भारत का 'मिसाइल मैन' किसे कहा जाता है?", a: "डॉ. ए. पी. जे. अब्दुल कलाम" },
-      en: { q: "Who is known as the 'Missile Man of India'?", a: "Dr. A.P.J. Abdul Kalam" }
-    },
-    {
-      mr: { q: "पाण्याचे रासायनिक सूत्र काय आहे?", a: "H₂O" },
-      hi: { q: "पानी का रासायनिक सूत्र क्या है?", a: "H₂O" },
-      en: { q: "What is the chemical formula of water?", a: "H₂O" }
-    }
-  ];
-
-  // App State
   let questionsData = [];
-  let unseenPool = [];          // Non-repeating random deck
-  let historyStack = [];        // Visited questions path
+  let unseenPool = [];
+  let historyStack = [];
   let currentIndex = -1;
   let currentLanguage = 'mr';
   let timer = 60;
@@ -519,7 +428,6 @@
   let streak = 0;
   const revealedQuestions = new Set();
 
-  // DOM references
   const questionEl = document.getElementById("question");
   const answerEl = document.getElementById("answer");
   const cardEl = document.getElementById("card");
@@ -536,35 +444,40 @@
   const lblStreak = document.getElementById("lbl-streak");
   const lblDesignation = document.getElementById("lbl-designation");
 
-  // Bulletproof Normalizer: Handles every possible JSON format returned by Google Sheets
   function normalizeApiResponse(rawItems) {
     if (!Array.isArray(rawItems)) return [];
+    const parsed = [];
 
-    const result = [];
+    // Check if the first row is a header row in 2D array
+    let startIdx = 0;
+    if (Array.isArray(rawItems[0]) && typeof rawItems[0][0] === 'string' && (rawItems[0][0].toLowerCase().includes('question') || rawItems[0][0].toLowerCase().includes('q') || rawItems[0][0].toLowerCase().includes('प्रश्न'))) {
+      startIdx = 1;
+    }
 
-    rawItems.forEach(item => {
-      if (!item) return;
+    for (let i = startIdx; i < rawItems.length; i++) {
+      const item = rawItems[i];
+      if (!item) continue;
 
-      // Format 1: 2D Array [mrQ, mrA, hiQ, hiA, enQ, enA]
       if (Array.isArray(item)) {
-        if (item.length >= 2) {
-          result.push({
-            mr: { q: String(item[0] || "").trim(), a: String(item[1] || "").trim() },
-            hi: { q: String(item[2] || item[0] || "").trim(), a: String(item[3] || item[1] || "").trim() },
-            en: { q: String(item[4] || item[0] || "").trim(), a: String(item[5] || item[1] || "").trim() }
+        const mrQ = String(item[0] || "").trim();
+        const mrA = String(item[1] || "").trim();
+        const hiQ = String(item[2] || item[0] || "").trim();
+        const hiA = String(item[3] || item[1] || "").trim();
+        const enQ = String(item[4] || item[0] || "").trim();
+        const enA = String(item[5] || item[1] || "").trim();
+
+        if (mrQ || hiQ || enQ) {
+          parsed.push({
+            mr: { q: mrQ, a: mrA },
+            hi: { q: hiQ, a: hiA },
+            en: { q: enQ, a: enA }
           });
         }
-        return;
-      }
-
-      // Format 2: Object with key-value pairs
-      if (typeof item === 'object') {
+      } else if (typeof item === 'object') {
         const keys = Object.keys(item);
-        
-        // Flexible key matcher
         const getVal = (patterns) => {
           for (const p of patterns) {
-            const found = keys.find(k => k.trim().toLowerCase().replace(/[^a-z0-9]/g, '') === p.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const found = keys.find(k => k.trim().toLowerCase().replace(/[^a-z0-9]/g, '') === p);
             if (found && item[found] !== undefined && item[found] !== null && String(item[found]).trim() !== "") {
               return String(item[found]).trim();
             }
@@ -572,29 +485,25 @@
           return "";
         };
 
-        const mrQ = getVal(['mrq', 'qmr', 'questionmr', 'mrquestion', 'marathiq', 'marathiquestion', 'q', 'question', '1']);
-        const mrA = getVal(['mra', 'amr', 'answermr', 'mranswer', 'marathia', 'marathianswer', 'a', 'answer', '2']);
-        
-        const hiQ = getVal(['hiq', 'qhi', 'questionhi', 'hiquestion', 'hindiq', 'hindiquestion', '3']) || mrQ;
-        const hiA = getVal(['hia', 'ahi', 'answerhi', 'hianswer', 'hindia', 'hindianswer', '4']) || mrA;
-        
-        const enQ = getVal(['enq', 'qen', 'questionen', 'enquestion', 'englishq', 'englishquestion', '5']) || mrQ;
-        const enA = getVal(['ena', 'aen', 'answeren', 'enanswer', 'englisha', 'englishanswer', '6']) || mrA;
+        const mrQ = getVal(['mrq', 'qmr', 'questionmr', 'mrquestion', 'marathiq', 'q', 'question']) || "";
+        const mrA = getVal(['mra', 'amr', 'answermr', 'mranswer', 'marathia', 'a', 'answer']) || "";
+        const hiQ = getVal(['hiq', 'qhi', 'questionhi', 'hiquestion', 'hindiq']) || mrQ;
+        const hiA = getVal(['hia', 'ahi', 'answerhi', 'hianswer', 'hindia']) || mrA;
+        const enQ = getVal(['enq', 'qen', 'questionen', 'enquestion', 'englishq']) || mrQ;
+        const enA = getVal(['ena', 'aen', 'answeren', 'enanswer', 'englisha']) || mrA;
 
         if (mrQ || hiQ || enQ) {
-          result.push({
+          parsed.push({
             mr: { q: mrQ, a: mrA },
             hi: { q: hiQ, a: hiA },
             en: { q: enQ, a: enA }
           });
         }
       }
-    });
-
-    return result;
+    }
+    return parsed;
   }
 
-  // Fisher-Yates Shuffle creates a pure randomized non-repeating deck
   function initializeUnseenPool() {
     unseenPool = Array.from({ length: questionsData.length }, (_, i) => i);
     for (let i = unseenPool.length - 1; i > 0; i--) {
@@ -603,45 +512,59 @@
     }
   }
 
-  async function fetchQuestionsFromSheet() {
+  // Dual-Layer Loader: Attempts direct fetch, automatically falls back to JSONP on CORS/redirect block
+  function fetchQuestions() {
     questionEl.textContent = uiTranslations[currentLanguage].loading;
     answerEl.textContent = "-";
     nextBtn.disabled = true;
 
-    try {
-      const response = await fetch(API_URL, {
-        method: "GET",
-        mode: "cors",
-        redirect: "follow",
-        headers: { "Accept": "application/json" }
+    // Layer 1: Direct fetch with follow redirects
+    fetch(API_URL, { method: "GET", redirect: "follow" })
+      .then(res => res.json())
+      .then(data => {
+        handleRawData(data);
+      })
+      .catch(err => {
+        console.warn("Direct fetch restricted, switching to JSONP request...", err);
+        loadJSONP(API_URL);
       });
+  }
 
-      if (!response.ok) throw new Error("HTTP Status: " + response.status);
+  function loadJSONP(url) {
+    const callbackName = "handleSheetJSONP_" + Math.round(100000 * Math.random());
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      handleRawData(data);
+    };
 
-      const json = await response.json();
-      
-      // Auto-unwrap nested response objects
-      let rawList = [];
-      if (Array.isArray(json)) {
-        rawList = json;
-      } else if (json && typeof json === 'object') {
-        rawList = json.data || json.questions || json.rows || json.records || json.result || Object.values(json);
-      }
+    const script = document.createElement("script");
+    script.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + "callback=" + callbackName;
+    script.onerror = function() {
+      console.error("JSONP script execution failed.");
+      questionEl.textContent = uiTranslations[currentLanguage].error;
+      nextBtn.disabled = false;
+    };
+    document.body.appendChild(script);
+  }
 
-      const parsed = normalizeApiResponse(rawList);
+  function handleRawData(raw) {
+    let list = [];
+    if (Array.isArray(raw)) {
+      list = raw;
+    } else if (raw && typeof raw === 'object') {
+      list = raw.data || raw.questions || raw.rows || raw.result || Object.values(raw);
+    }
 
-      if (parsed.length > 0) {
-        questionsData = parsed;
-      } else {
-        throw new Error("Parsed dataset is empty");
-      }
-    } catch (err) {
-      console.warn("Failed loading from remote Sheet API, falling back to local dataset.", err);
-      questionsData = fallbackQuestions;
-    } finally {
+    const parsed = normalizeApiResponse(list);
+    if (parsed.length > 0) {
+      questionsData = parsed;
       initializeUnseenPool();
       nextBtn.disabled = false;
       nextQuestion();
+    } else {
+      questionEl.textContent = uiTranslations[currentLanguage].error;
+      nextBtn.disabled = false;
     }
   }
 
@@ -649,13 +572,11 @@
     if (!uiTranslations[lang]) return;
     currentLanguage = lang;
 
-    // Dropdown & Button UI update
     langSelect.value = lang;
     document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
     const activeBtn = document.getElementById(`btn-lang-${lang}`);
     if (activeBtn) activeBtn.classList.add("active");
 
-    // Labels & Action UI text
     lblQuestion.textContent = uiTranslations[lang].lblQuestion;
     lblAnswer.textContent = uiTranslations[lang].lblAnswer;
     prevBtn.textContent = uiTranslations[lang].btnPrev;
@@ -666,7 +587,6 @@
       lblDesignation.textContent = uiTranslations[lang].designation;
     }
 
-    // Refresh Question Text
     if (currentIndex >= 0 && historyStack[currentIndex] !== undefined && questionsData.length > 0) {
       const qIndex = historyStack[currentIndex];
       const qItem = questionsData[qIndex];
@@ -686,14 +606,13 @@
     const qItem = questionsData[qIndex];
     const langData = (qItem && qItem[currentLanguage]) ? qItem[currentLanguage] : (qItem ? qItem.mr : { q: "-", a: "-" });
 
-    // Instantly reset card flip state without jarring animations
     cardEl.style.transition = "none";
     cardEl.classList.remove("is-flipped");
     
     questionEl.textContent = langData.q;
     answerEl.textContent = langData.a;
 
-    void cardEl.offsetWidth; // Force CSS repaint
+    void cardEl.offsetWidth;
     cardEl.style.transition = "transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)";
 
     prevBtn.disabled = (currentIndex <= 0);
@@ -704,20 +623,15 @@
     if (questionsData.length === 0) return;
 
     if (currentIndex < historyStack.length - 1) {
-      // Step forward into already visited history
       currentIndex++;
     } else {
-      // If full deck of 1035+ questions is exhausted, reshuffle for new cycle
       if (unseenPool.length === 0) {
         initializeUnseenPool();
-        // Prevent showing identical question back-to-back across cycle boundaries
         if (historyStack.length > 0 && unseenPool[unseenPool.length - 1] === historyStack[currentIndex]) {
           const top = unseenPool.pop();
           unseenPool.unshift(top);
         }
       }
-      
-      // Pull unique unseen question
       const nextIdx = unseenPool.pop();
       historyStack.push(nextIdx);
       currentIndex++;
@@ -739,7 +653,6 @@
     if (isFlipped) {
       const currentQId = historyStack[currentIndex];
       
-      // Award score and trigger celebration only once per question
       if (!revealedQuestions.has(currentQId)) {
         revealedQuestions.add(currentQId);
         streak++;
@@ -793,10 +706,9 @@
     }
   }
 
-  // Initialize
   window.addEventListener("DOMContentLoaded", () => {
     changeLanguage('mr');
-    fetchQuestionsFromSheet();
+    fetchQuestions();
   });
 </script>
 </body>
