@@ -487,66 +487,6 @@
   const lblStreak = document.getElementById("lbl-streak");
   const lblDesignation = document.getElementById("lbl-designation");
 
-  function normalizeApiResponse(rawItems) {
-    if (!Array.isArray(rawItems)) return [];
-    const parsed = [];
-
-    let startIdx = 0;
-    if (Array.isArray(rawItems[0]) && typeof rawItems[0][0] === 'string' && 
-       (rawItems[0][0].toLowerCase().includes('question') || rawItems[0][0].toLowerCase().includes('q') || rawItems[0][0].toLowerCase().includes('प्रश्न'))) {
-      startIdx = 1;
-    }
-
-    for (let i = startIdx; i < rawItems.length; i++) {
-      const item = rawItems[i];
-      if (!item) continue;
-
-      if (Array.isArray(item)) {
-        const mrQ = String(item[0] || "").trim();
-        const mrA = String(item[1] || "").trim();
-        const hiQ = String(item[2] || item[0] || "").trim();
-        const hiA = String(item[3] || item[1] || "").trim();
-        const enQ = String(item[4] || item[0] || "").trim();
-        const enA = String(item[5] || item[1] || "").trim();
-
-        if (mrQ || hiQ || enQ) {
-          parsed.push({
-            mr: { q: mrQ, a: mrA },
-            hi: { q: hiQ, a: hiA },
-            en: { q: enQ, a: enA }
-          });
-        }
-      } else if (typeof item === 'object') {
-        const keys = Object.keys(item);
-        const getVal = (patterns) => {
-          for (const p of patterns) {
-            const found = keys.find(k => k.trim().toLowerCase().replace(/[^a-z0-9]/g, '') === p);
-            if (found && item[found] !== undefined && item[found] !== null && String(item[found]).trim() !== "") {
-              return String(item[found]).trim();
-            }
-          }
-          return "";
-        };
-
-        const mrQ = getVal(['mrq', 'qmr', 'questionmr', 'mrquestion', 'marathiq', 'q', 'question']) || "";
-        const mrA = getVal(['mra', 'amr', 'answermr', 'mranswer', 'marathia', 'a', 'answer']) || "";
-        const hiQ = getVal(['hiq', 'qhi', 'questionhi', 'hiquestion', 'hindiq']) || mrQ;
-        const hiA = getVal(['hia', 'ahi', 'answerhi', 'hianswer', 'hindia']) || mrA;
-        const enQ = getVal(['enq', 'qen', 'questionen', 'enquestion', 'englishq']) || mrQ;
-        const enA = getVal(['ena', 'aen', 'answeren', 'enanswer', 'englisha']) || mrA;
-
-        if (mrQ || hiQ || enQ) {
-          parsed.push({
-            mr: { q: mrQ, a: mrA },
-            hi: { q: hiQ, a: hiA },
-            en: { q: enQ, a: enA }
-          });
-        }
-      }
-    }
-    return parsed;
-  }
-
   function initializeUnseenPool() {
     unseenPool = Array.from({ length: questionsData.length }, (_, i) => i);
     for (let i = unseenPool.length - 1; i > 0; i--) {
@@ -584,16 +524,10 @@
   }
 
   function handleRawData(raw) {
-    let list = [];
-    if (Array.isArray(raw)) {
-      list = raw;
-    } else if (raw && typeof raw === 'object') {
-      list = raw.data || raw.questions || raw.rows || raw.result || Object.values(raw);
-    }
+    let list = Array.isArray(raw) ? raw : (raw.data || raw.questions || raw.result || []);
 
-    const parsed = normalizeApiResponse(list);
-    if (parsed.length > 0) {
-      questionsData = parsed;
+    if (list && list.length > 0) {
+      questionsData = list;
       initializeUnseenPool();
       nextBtn.disabled = false;
       nextQuestion();
