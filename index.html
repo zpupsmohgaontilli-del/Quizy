@@ -15,21 +15,30 @@
       --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-    body {
-      background: var(--bg-gradient);
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: clamp(8px, 2.5vw, 24px);
-      position: relative;
-      overflow-x: hidden;
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     }
 
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden; /* Strict lock: no page scrollbars */
+      background: var(--bg-gradient);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: clamp(6px, 1.2vw, 16px);
+      position: relative;
+    }
+
+    /* Ambient Background Doodles */
     .bg-doodles {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -40,22 +49,23 @@
 
     .doodle {
       position: absolute;
-      font-size: clamp(1.8rem, 4vw, 4.5rem);
-      opacity: 0.12;
+      font-size: clamp(1.6rem, 3.5vw, 4rem);
+      opacity: 0.10;
       animation: float 8s infinite ease-in-out;
     }
 
-    .doodle:nth-child(1) { top: 8%; left: 6%; animation-delay: 0s; }
-    .doodle:nth-child(2) { top: 78%; left: 8%; animation-delay: 2s; }
-    .doodle:nth-child(3) { top: 12%; right: 8%; animation-delay: 4s; }
-    .doodle:nth-child(4) { top: 82%; right: 10%; animation-delay: 1s; }
-    .doodle:nth-child(5) { top: 45%; left: 3%; animation-delay: 3s; }
+    .doodle:nth-child(1) { top: 6%; left: 4%; animation-delay: 0s; }
+    .doodle:nth-child(2) { top: 82%; left: 6%; animation-delay: 2s; }
+    .doodle:nth-child(3) { top: 8%; right: 6%; animation-delay: 4s; }
+    .doodle:nth-child(4) { top: 82%; right: 6%; animation-delay: 1s; }
+    .doodle:nth-child(5) { top: 48%; left: 2%; animation-delay: 3s; }
 
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(8deg); }
+      50% { transform: translateY(-10px) rotate(6deg); }
     }
 
+    /* Main Container (Auto-Fitting Viewport) */
     .app-container {
       position: relative;
       z-index: 2;
@@ -63,37 +73,42 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: clamp(16px, 2.5vw, 32px);
-      padding: clamp(14px, 2.8vw, 32px);
+      border-radius: clamp(12px, 2vw, 24px);
+      padding: clamp(10px, 1.8vw, 22px);
       width: 100%;
-      max-width: 920px;
+      max-width: 1100px;
+      max-height: calc(100dvh - clamp(12px, 2.5vw, 32px));
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       box-shadow: 0 20px 50px rgba(0,0,0,0.4);
       text-align: center;
       color: white;
-      margin: auto;
     }
 
+    /* Top Toolbar */
     .lang-bar {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
       background: rgba(0, 0, 0, 0.2);
-      padding: 8px 14px;
-      border-radius: 18px;
-      margin-bottom: clamp(10px, 1.8vw, 16px);
+      padding: clamp(4px, 0.6vw, 8px) clamp(8px, 1.2vw, 14px);
+      border-radius: 14px;
+      flex-shrink: 0;
     }
 
-    .lang-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+    .lang-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
 
     .lang-btn {
       background: rgba(255, 255, 255, 0.18);
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: clamp(0.8rem, 1.4vw, 1.05rem);
+      padding: clamp(3px, 0.5vw, 6px) clamp(8px, 1vw, 14px);
+      border-radius: 16px;
+      font-size: clamp(0.72rem, 1.1vw, 0.95rem);
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -111,8 +126,8 @@
     .lang-dropdown-container {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+      gap: 4px;
+      font-size: clamp(0.75rem, 1.1vw, 0.95rem);
       font-weight: 600;
     }
 
@@ -120,38 +135,48 @@
       background: #1e1b4b;
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: clamp(0.85rem, 1.4vw, 1rem);
+      padding: clamp(3px, 0.5vw, 6px) clamp(6px, 1vw, 10px);
+      border-radius: 10px;
+      font-size: clamp(0.72rem, 1vw, 0.9rem);
       font-weight: 600;
       outline: none;
       cursor: pointer;
     }
 
+    /* Top Brand & Character Row */
+    .top-meta-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: clamp(2px, 0.5vh, 6px) 0;
+      flex-shrink: 0;
+    }
+
     .app-title {
-      font-size: clamp(1.6rem, 3.8vw, 3rem);
+      font-size: clamp(1.2rem, 2.6vw, 2.2rem);
       font-weight: 800;
-      letter-spacing: 1.5px;
-      margin-bottom: clamp(6px, 1.2vw, 12px);
+      letter-spacing: 1px;
       background: linear-gradient(45deg, #a855f7, #3b82f6, #34d399);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
+      line-height: 1.1;
     }
 
     .character-container {
-      width: clamp(60px, 8.5vw, 105px);
-      height: clamp(60px, 8.5vw, 105px);
-      margin: 0 auto clamp(8px, 1.5vw, 14px) auto;
+      width: clamp(36px, 4.5vw, 56px);
+      height: clamp(36px, 4.5vw, 56px);
       background: rgba(255,255,255,0.2);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      border: clamp(2px, 0.4vw, 4px) solid rgba(255,255,255,0.4);
+      border: 2px solid rgba(255,255,255,0.4);
       animation: pulseCharacter 3s infinite ease-in-out;
-      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
       user-select: none;
+      flex-shrink: 0;
     }
 
     @keyframes pulseCharacter {
@@ -165,32 +190,34 @@
 
     @keyframes celebrate {
       0% { transform: translateY(0) scale(1.1); }
-      100% { transform: translateY(-12px) scale(1.1); }
+      100% { transform: translateY(-8px) scale(1.1); }
     }
 
-    .header {
+    .header-stats {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: clamp(6px, 1.2vw, 14px);
+      margin: clamp(2px, 0.4vh, 6px) 0;
       font-weight: 700;
-      font-size: clamp(0.95rem, 1.8vw, 1.45rem);
+      font-size: clamp(0.85rem, 1.3vw, 1.15rem);
+      flex-shrink: 0;
     }
 
     .streak-badge {
       background: rgba(255, 255, 255, 0.25);
-      padding: clamp(4px, 0.7vw, 7px) clamp(10px, 1.4vw, 16px);
-      border-radius: 20px;
-      font-size: clamp(0.85rem, 1.6vw, 1.2rem);
+      padding: clamp(2px, 0.4vw, 5px) clamp(8px, 1vw, 14px);
+      border-radius: 16px;
+      font-size: clamp(0.8rem, 1.2vw, 1.05rem);
     }
 
     .timer-container {
       width: 100%;
-      height: clamp(8px, 1.1vw, 12px);
+      height: clamp(6px, 0.8vh, 10px);
       background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
-      margin-bottom: clamp(12px, 2.2vw, 22px);
+      margin-bottom: clamp(6px, 1vh, 12px);
       overflow: hidden;
+      flex-shrink: 0;
     }
 
     .timer-bar {
@@ -201,22 +228,25 @@
       transition: width 1s linear, background-color 0.5s ease;
     }
 
+    /* Auto-Expanding 3D Flip Card */
     .card-scene {
       width: 100%;
-      min-height: clamp(180px, 25vh, 340px);
+      flex: 1 1 auto;
+      min-height: 120px;
       perspective: 1200px;
-      margin-bottom: clamp(14px, 2.2vw, 24px);
+      margin-bottom: clamp(6px, 1vh, 12px);
       cursor: pointer;
+      display: flex;
     }
 
     .card {
       width: 100%;
-      min-height: clamp(180px, 25vh, 340px);
+      height: 100%;
       position: relative;
       transform-style: preserve-3d;
       transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-      border-radius: clamp(14px, 2vw, 22px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      border-radius: clamp(10px, 1.5vw, 18px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
     .card.is-flipped { transform: rotateY(180deg); }
@@ -228,61 +258,67 @@
       height: 100%;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      border-radius: clamp(14px, 2vw, 22px);
+      border-radius: clamp(10px, 1.5vw, 18px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: clamp(16px, 2.5vw, 30px);
+      padding: clamp(10px, 2vw, 24px);
       background: white;
       color: #2d3436;
-      overflow-y: auto;
+      overflow-y: auto; /* Internal scrolling only if question exceeds huge bounds */
+      scrollbar-width: none;
     }
 
-    .card-front { border-bottom: clamp(5px, 0.8vw, 10px) solid var(--primary); }
-    .card-back { background: #f8f9fa; transform: rotateY(180deg); border-bottom: clamp(5px, 0.8vw, 10px) solid var(--accent); }
+    .card-face::-webkit-scrollbar { display: none; }
+
+    .card-front { border-bottom: clamp(4px, 0.6vw, 8px) solid var(--primary); }
+    .card-back { background: #f8f9fa; transform: rotateY(180deg); border-bottom: clamp(4px, 0.6vw, 8px) solid var(--accent); }
 
     .card-label {
-      font-size: clamp(0.75rem, 1.3vw, 1.1rem);
+      font-size: clamp(0.7rem, 1vw, 0.95rem);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       color: #8395a7;
-      margin-bottom: clamp(6px, 1vw, 12px);
+      margin-bottom: clamp(4px, 0.8vh, 8px);
       font-weight: 700;
+      flex-shrink: 0;
     }
 
     .card-text {
-      font-size: clamp(1.15rem, 2.6vw, 2.1rem);
+      font-size: clamp(1.05rem, 2.2vw, 2.2rem);
       font-weight: 700;
-      line-height: 1.4;
+      line-height: 1.35;
       text-align: center;
       word-break: break-word;
     }
 
     .card-back .card-text {
       color: var(--accent);
-      font-size: clamp(1.25rem, 3vw, 2.3rem);
+      font-size: clamp(1.15rem, 2.5vw, 2.4rem);
     }
 
+    /* Action Buttons Bar */
     .button-group {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: clamp(8px, 1.5vw, 16px);
+      gap: clamp(6px, 1vw, 12px);
+      flex-shrink: 0;
     }
 
     .btn {
-      padding: clamp(10px, 1.5vw, 16px) clamp(6px, 1.2vw, 14px);
+      padding: clamp(8px, 1.2vh, 14px) clamp(6px, 1vw, 12px);
       border: none;
-      border-radius: clamp(10px, 1.4vw, 14px);
-      font-size: clamp(0.85rem, 1.5vw, 1.25rem);
+      border-radius: clamp(8px, 1vw, 12px);
+      font-size: clamp(0.75rem, 1.2vw, 1.05rem);
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.22);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       white-space: nowrap;
       user-select: none;
     }
@@ -297,21 +333,45 @@
     .btn-next { background: #0984e3; color: white; }
     .btn-next:hover { background: #0773c5; }
 
+    /* Compact Footer */
     .credits-footer {
-      margin-top: clamp(12px, 1.8vw, 20px);
-      font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+      margin-top: clamp(6px, 1vh, 12px);
+      font-size: clamp(0.65rem, 0.9vw, 0.85rem);
       color: rgba(255, 255, 255, 0.85);
-      line-height: 1.4;
+      line-height: 1.3;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
-      padding-top: clamp(8px, 1.4vw, 14px);
+      padding-top: clamp(4px, 0.8vh, 8px);
+      flex-shrink: 0;
     }
 
     .credits-footer strong { color: #ffffff; }
 
-    @media (max-width: 580px) {
+    /* Ultra-compact Portrait Phones */
+    @media (max-width: 580px) and (orientation: portrait) {
       .lang-bar { justify-content: center; }
       .button-group { grid-template-columns: 1fr 1fr; }
       .btn-show { grid-column: span 2; order: -1; }
+    }
+
+    /* Landscape Mode Adaptation (Smartphones, IFP Screens, Smart TVs) */
+    @media (max-height: 520px) and (orientation: landscape) {
+      body { padding: 4px; }
+      .app-container {
+        max-height: 98dvh;
+        padding: 6px 12px;
+      }
+      .top-meta-row { display: none; } /* Saves valuable vertical height in landscape */
+      .card-scene { min-height: 90px; margin-bottom: 4px; }
+      .button-group { gap: 6px; }
+      .btn { padding: 6px 8px; }
+      .credits-footer { display: none; } /* Maximizes viewable card area on short displays */
+    }
+
+    /* 4K & Interactive Flat Panel Scaling */
+    @media (min-width: 1800px) {
+      .app-container { max-width: 1400px; }
+      .card-text { font-size: clamp(2rem, 3vw, 3.2rem); }
+      .card-back .card-text { font-size: clamp(2.2rem, 3.4vw, 3.5rem); }
     }
   </style>
 </head>
@@ -342,16 +402,19 @@
     </div>
   </div>
 
-  <h1 class="app-title">Quizy 🧠</h1>
-  <div class="character-container" id="student-avatar">🧑‍🎓</div>
-
-  <div class="header">
-    <div>⏱️ <span id="timer-text">60</span>s</div>
-    <div class="streak-badge">⚡ <span id="lbl-streak">गुण</span>: <span id="streak">0</span></div>
+  <div class="top-meta-row">
+    <h1 class="app-title">Quizy 🧠</h1>
+    <div class="character-container" id="student-avatar">🧑‍🎓</div>
   </div>
 
-  <div class="timer-container">
-    <div class="timer-bar" id="timer-bar"></div>
+  <div>
+    <div class="header-stats">
+      <div>⏱️ <span id="timer-text">60</span>s</div>
+      <div class="streak-badge">⚡ <span id="lbl-streak">गुण</span>: <span id="streak">0</span></div>
+    </div>
+    <div class="timer-container">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
   </div>
 
   <div class="card-scene" onclick="flipCard()">
@@ -374,8 +437,7 @@
   </div>
 
   <div class="credits-footer">
-    © <strong>Vrushabh H. Borkar</strong><br>
-    <span id="lbl-designation">Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)</span>
+    © <strong>Vrushabh H. Borkar</strong> | <span id="lbl-designation">Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)</span>
   </div>
 </div>
 
@@ -448,7 +510,6 @@
     if (!Array.isArray(rawItems)) return [];
     const parsed = [];
 
-    // Check if the first row is a header row in 2D array
     let startIdx = 0;
     if (Array.isArray(rawItems[0]) && typeof rawItems[0][0] === 'string' && (rawItems[0][0].toLowerCase().includes('question') || rawItems[0][0].toLowerCase().includes('q') || rawItems[0][0].toLowerCase().includes('प्रश्न'))) {
       startIdx = 1;
@@ -512,22 +573,15 @@
     }
   }
 
-  // Dual-Layer Loader: Attempts direct fetch, automatically falls back to JSONP on CORS/redirect block
   function fetchQuestions() {
     questionEl.textContent = uiTranslations[currentLanguage].loading;
     answerEl.textContent = "-";
     nextBtn.disabled = true;
 
-    // Layer 1: Direct fetch with follow redirects
     fetch(API_URL, { method: "GET", redirect: "follow" })
       .then(res => res.json())
-      .then(data => {
-        handleRawData(data);
-      })
-      .catch(err => {
-        console.warn("Direct fetch restricted, switching to JSONP request...", err);
-        loadJSONP(API_URL);
-      });
+      .then(data => handleRawData(data))
+      .catch(() => loadJSONP(API_URL));
   }
 
   function loadJSONP(url) {
@@ -541,7 +595,6 @@
     const script = document.createElement("script");
     script.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + "callback=" + callbackName;
     script.onerror = function() {
-      console.error("JSONP script execution failed.");
       questionEl.textContent = uiTranslations[currentLanguage].error;
       nextBtn.disabled = false;
     };
