@@ -1,446 +1,3 @@
-<!DOCTYPE html>
-<html lang="mr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Quizy - Multi-Language Quiz</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    :root {
-      --primary: #6c5ce7;
-      --accent: #00b894;
-      --danger: #ff7675;
-      --warning: #fdcb6e;
-      --prev-btn: #e17055;
-      --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-    }
-
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    }
-
-    html, body {
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      overflow: hidden; /* Strict lock: no page scrollbars */
-      background: var(--bg-gradient);
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: clamp(6px, 1.2vw, 16px);
-      position: relative;
-    }
-
-    /* Ambient Background Doodles */
-    .bg-doodles {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .doodle {
-      position: absolute;
-      font-size: clamp(1.6rem, 3.5vw, 4rem);
-      opacity: 0.10;
-      animation: float 8s infinite ease-in-out;
-    }
-
-    .doodle:nth-child(1) { top: 6%; left: 4%; animation-delay: 0s; }
-    .doodle:nth-child(2) { top: 82%; left: 6%; animation-delay: 2s; }
-    .doodle:nth-child(3) { top: 8%; right: 6%; animation-delay: 4s; }
-    .doodle:nth-child(4) { top: 82%; right: 6%; animation-delay: 1s; }
-    .doodle:nth-child(5) { top: 48%; left: 2%; animation-delay: 3s; }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(6deg); }
-    }
-
-    /* Main Container (Auto-Fitting Viewport) */
-    .app-container {
-      position: relative;
-      z-index: 2;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: clamp(12px, 2vw, 24px);
-      padding: clamp(10px, 1.8vw, 22px);
-      width: 100%;
-      max-width: 1100px;
-      max-height: calc(100dvh - clamp(12px, 2.5vw, 32px));
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      text-align: center;
-      color: white;
-    }
-
-    /* Top Toolbar */
-    .lang-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: clamp(4px, 0.6vw, 8px) clamp(8px, 1.2vw, 14px);
-      border-radius: 14px;
-      flex-shrink: 0;
-    }
-
-    .lang-buttons { display: flex; gap: 4px; flex-wrap: wrap; }
-
-    .lang-btn {
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-      padding: clamp(3px, 0.5vw, 6px) clamp(8px, 1vw, 14px);
-      border-radius: 16px;
-      font-size: clamp(0.72rem, 1.1vw, 0.95rem);
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .lang-btn:hover { background: rgba(255, 255, 255, 0.35); }
-
-    .lang-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #0d3b2e;
-      box-shadow: 0 0 10px rgba(0, 184, 148, 0.6);
-    }
-
-    .lang-dropdown-container {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: clamp(0.75rem, 1.1vw, 0.95rem);
-      font-weight: 600;
-    }
-
-    .lang-select {
-      background: #1e1b4b;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: clamp(3px, 0.5vw, 6px) clamp(6px, 1vw, 10px);
-      border-radius: 10px;
-      font-size: clamp(0.72rem, 1vw, 0.9rem);
-      font-weight: 600;
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* Top Brand & Character Row */
-    .top-meta-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin: clamp(2px, 0.5vh, 6px) 0;
-      flex-shrink: 0;
-    }
-
-    .app-title {
-      font-size: clamp(1.2rem, 2.6vw, 2.2rem);
-      font-weight: 800;
-      letter-spacing: 1px;
-      background: linear-gradient(45deg, #a855f7, #3b82f6, #34d399);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-      line-height: 1.1;
-    }
-
-    .character-container {
-      width: clamp(36px, 4.5vw, 56px);
-      height: clamp(36px, 4.5vw, 56px);
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border: 2px solid rgba(255,255,255,0.4);
-      animation: pulseCharacter 3s infinite ease-in-out;
-      font-size: clamp(1.4rem, 2.2vw, 2rem);
-      user-select: none;
-      flex-shrink: 0;
-    }
-
-    @keyframes pulseCharacter {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .character-happy {
-      animation: celebrate 0.6s ease-in-out infinite alternate;
-    }
-
-    @keyframes celebrate {
-      0% { transform: translateY(0) scale(1.1); }
-      100% { transform: translateY(-8px) scale(1.1); }
-    }
-
-    .header-stats {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: clamp(2px, 0.4vh, 6px) 0;
-      font-weight: 700;
-      font-size: clamp(0.85rem, 1.3vw, 1.15rem);
-      flex-shrink: 0;
-    }
-
-    .streak-badge {
-      background: rgba(255, 255, 255, 0.25);
-      padding: clamp(2px, 0.4vw, 5px) clamp(8px, 1vw, 14px);
-      border-radius: 16px;
-      font-size: clamp(0.8rem, 1.2vw, 1.05rem);
-    }
-
-    .timer-container {
-      width: 100%;
-      height: clamp(6px, 0.8vh, 10px);
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      margin-bottom: clamp(6px, 1vh, 12px);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .timer-bar {
-      height: 100%;
-      width: 100%;
-      background: var(--accent);
-      border-radius: 10px;
-      transition: width 1s linear, background-color 0.5s ease;
-    }
-
-    /* Auto-Expanding 3D Flip Card */
-    .card-scene {
-      width: 100%;
-      flex: 1 1 auto;
-      min-height: 120px;
-      perspective: 1200px;
-      margin-bottom: clamp(6px, 1vh, 12px);
-      cursor: pointer;
-      display: flex;
-    }
-
-    .card {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-      border-radius: clamp(10px, 1.5vw, 18px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-
-    .card.is-flipped { transform: rotateY(180deg); }
-
-    .card-face {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: clamp(10px, 1.5vw, 18px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: clamp(10px, 2vw, 24px);
-      background: white;
-      color: #2d3436;
-      overflow-y: auto; /* Internal scrolling only if question exceeds huge bounds */
-      scrollbar-width: none;
-    }
-
-    .card-face::-webkit-scrollbar { display: none; }
-
-    .card-front { border-bottom: clamp(4px, 0.6vw, 8px) solid var(--primary); }
-    .card-back { background: #f8f9fa; transform: rotateY(180deg); border-bottom: clamp(4px, 0.6vw, 8px) solid var(--accent); }
-
-    .card-label {
-      font-size: clamp(0.7rem, 1vw, 0.95rem);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #8395a7;
-      margin-bottom: clamp(4px, 0.8vh, 8px);
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .card-text {
-      font-size: clamp(1.05rem, 2.2vw, 2.2rem);
-      font-weight: 700;
-      line-height: 1.35;
-      text-align: center;
-      word-break: break-word;
-    }
-
-    .card-back .card-text {
-      color: var(--accent);
-      font-size: clamp(1.15rem, 2.5vw, 2.4rem);
-    }
-
-    /* Action Buttons Bar */
-    .button-group {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(6px, 1vw, 12px);
-      flex-shrink: 0;
-    }
-
-    .btn {
-      padding: clamp(8px, 1.2vh, 14px) clamp(6px, 1vw, 12px);
-      border: none;
-      border-radius: clamp(8px, 1vw, 12px);
-      font-size: clamp(0.75rem, 1.2vw, 1.05rem);
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.22);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .btn:active { transform: scale(0.96); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none; }
-
-    .btn-prev { background: var(--prev-btn); color: white; }
-    .btn-prev:hover:not(:disabled) { background: #d63031; }
-    .btn-show { background: var(--accent); color: white; }
-    .btn-show:hover { background: #00a182; }
-    .btn-next { background: #0984e3; color: white; }
-    .btn-next:hover { background: #0773c5; }
-
-    /* Compact Footer */
-    .credits-footer {
-      margin-top: clamp(6px, 1vh, 12px);
-      font-size: clamp(0.65rem, 0.9vw, 0.85rem);
-      color: rgba(255, 255, 255, 0.85);
-      line-height: 1.3;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      padding-top: clamp(4px, 0.8vh, 8px);
-      flex-shrink: 0;
-    }
-
-    .credits-footer strong { color: #ffffff; }
-
-    /* Ultra-compact Portrait Phones */
-    @media (max-width: 580px) and (orientation: portrait) {
-      .lang-bar { justify-content: center; }
-      .button-group { grid-template-columns: 1fr 1fr; }
-      .btn-show { grid-column: span 2; order: -1; }
-    }
-
-    /* Landscape Mode Adaptation (Smartphones, IFP Screens, Smart TVs) */
-    @media (max-height: 520px) and (orientation: landscape) {
-      body { padding: 4px; }
-      .app-container {
-        max-height: 98dvh;
-        padding: 6px 12px;
-      }
-      .top-meta-row { display: none; } /* Saves valuable vertical height in landscape */
-      .card-scene { min-height: 90px; margin-bottom: 4px; }
-      .button-group { gap: 6px; }
-      .btn { padding: 6px 8px; }
-      .credits-footer { display: none; } /* Maximizes viewable card area on short displays */
-    }
-
-    /* 4K & Interactive Flat Panel Scaling */
-    @media (min-width: 1800px) {
-      .app-container { max-width: 1400px; }
-      .card-text { font-size: clamp(2rem, 3vw, 3.2rem); }
-      .card-back .card-text { font-size: clamp(2.2rem, 3.4vw, 3.5rem); }
-    }
-  </style>
-</head>
-<body>
-
-<div class="bg-doodles">
-  <div class="doodle">📚</div>
-  <div class="doodle">💡</div>
-  <div class="doodle">🎓</div>
-  <div class="doodle">✏️</div>
-  <div class="doodle">🔬</div>
-</div>
-
-<div class="app-container" id="app">
-  <div class="lang-bar">
-    <div class="lang-buttons">
-      <button class="lang-btn active" id="btn-lang-mr" onclick="changeLanguage('mr')">मराठी</button>
-      <button class="lang-btn" id="btn-lang-hi" onclick="changeLanguage('hi')">हिन्दी</button>
-      <button class="lang-btn" id="btn-lang-en" onclick="changeLanguage('en')">English</button>
-    </div>
-    <div class="lang-dropdown-container">
-      <span>🌐</span>
-      <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
-        <option value="mr" selected>मराठी (Marathi)</option>
-        <option value="hi">हिन्दी (Hindi)</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="top-meta-row">
-    <h1 class="app-title">Quizy 🧠</h1>
-    <div class="character-container" id="student-avatar">🧑‍🎓</div>
-  </div>
-
-  <div>
-    <div class="header-stats">
-      <div>⏱️ <span id="timer-text">60</span>s</div>
-      <div class="streak-badge">⚡ <span id="lbl-streak">गुण</span>: <span id="streak">0</span></div>
-    </div>
-    <div class="timer-container">
-      <div class="timer-bar" id="timer-bar"></div>
-    </div>
-  </div>
-
-  <div class="card-scene" onclick="flipCard()">
-    <div class="card" id="card">
-      <div class="card-face card-front">
-        <div class="card-label" id="lbl-question">प्रश्न</div>
-        <div class="card-text" id="question">डेटा लोड होत आहे...</div>
-      </div>
-      <div class="card-face card-back">
-        <div class="card-label" id="lbl-answer">उत्तर</div>
-        <div class="card-text" id="answer">-</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="button-group">
-    <button class="btn btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>⬅️ मागील प्रश्न</button>
-    <button class="btn btn-show" id="btn-show" onclick="flipCard()">👁️ उत्तर पाहा</button>
-    <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">पुढील प्रश्न ➡️</button>
-  </div>
-
-  <div class="credits-footer">
-    © <strong>Vrushabh H. Borkar</strong> | <span id="lbl-designation">Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)</span>
-  </div>
-</div>
-
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycby9ijHFBO9SbVTzijnZNRwDzshNpdQuoGhMHXEMndaPl4hXycg-hp_hU3qNZl8FMrqJyQ/exec";
 
@@ -453,6 +10,7 @@
       btnNext: "पुढील प्रश्न ➡️",
       lblStreak: "गुण",
       loading: "डेटा लोड होत आहे...",
+      translating: "भाषांतर करत आहे...",
       error: "डेटा लोड होऊ शकला नाही. कृपया रिफ्रेश करा.",
       designation: "पदवीधर शिक्षक, जि. प. उच्च प्राथमिक शाळा, मोहगाव (तिल्ली)"
     },
@@ -464,6 +22,7 @@
       btnNext: "अगला प्रश्न ➡️",
       lblStreak: "स्कोर",
       loading: "डेटा लोड हो रहा है...",
+      translating: "अनुवाद हो रहा है...",
       error: "डेटा लोड नहीं हो सका। कृपया पुनः प्रयास करें।",
       designation: "स्नातक शिक्षक, जि. प. उच्च प्राथमिक विद्यालय, मोहगांव (तल्ली)"
     },
@@ -475,6 +34,7 @@
       btnNext: "Next ➡️",
       lblStreak: "Streak",
       loading: "Loading questions...",
+      translating: "Translating...",
       error: "Could not load data. Please refresh.",
       designation: "Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)"
     }
@@ -506,12 +66,26 @@
   const lblStreak = document.getElementById("lbl-streak");
   const lblDesignation = document.getElementById("lbl-designation");
 
+  // On-the-fly Google Translate API fetcher
+  async function translateText(text, targetLang) {
+    if (!text || targetLang === 'mr') return text;
+    try {
+      const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+      const data = await res.json();
+      return data[0].map(item => item[0]).join('');
+    } catch (e) {
+      console.warn("Translation failed, returning source text:", e);
+      return text;
+    }
+  }
+
   function normalizeApiResponse(rawItems) {
     if (!Array.isArray(rawItems)) return [];
     const parsed = [];
 
     let startIdx = 0;
-    if (Array.isArray(rawItems[0]) && typeof rawItems[0][0] === 'string' && (rawItems[0][0].toLowerCase().includes('question') || rawItems[0][0].toLowerCase().includes('q') || rawItems[0][0].toLowerCase().includes('प्रश्न'))) {
+    if (Array.isArray(rawItems[0]) && typeof rawItems[0][0] === 'string' && 
+       (rawItems[0][0].toLowerCase().includes('question') || rawItems[0][0].toLowerCase().includes('q') || rawItems[0][0].toLowerCase().includes('प्रश्न'))) {
       startIdx = 1;
     }
 
@@ -522,10 +96,10 @@
       if (Array.isArray(item)) {
         const mrQ = String(item[0] || "").trim();
         const mrA = String(item[1] || "").trim();
-        const hiQ = String(item[2] || item[0] || "").trim();
-        const hiA = String(item[3] || item[1] || "").trim();
-        const enQ = String(item[4] || item[0] || "").trim();
-        const enA = String(item[5] || item[1] || "").trim();
+        const hiQ = String(item[2] || "").trim();
+        const hiA = String(item[3] || "").trim();
+        const enQ = String(item[4] || "").trim();
+        const enA = String(item[5] || "").trim();
 
         if (mrQ || hiQ || enQ) {
           parsed.push({
@@ -548,10 +122,10 @@
 
         const mrQ = getVal(['mrq', 'qmr', 'questionmr', 'mrquestion', 'marathiq', 'q', 'question']) || "";
         const mrA = getVal(['mra', 'amr', 'answermr', 'mranswer', 'marathia', 'a', 'answer']) || "";
-        const hiQ = getVal(['hiq', 'qhi', 'questionhi', 'hiquestion', 'hindiq']) || mrQ;
-        const hiA = getVal(['hia', 'ahi', 'answerhi', 'hianswer', 'hindia']) || mrA;
-        const enQ = getVal(['enq', 'qen', 'questionen', 'enquestion', 'englishq']) || mrQ;
-        const enA = getVal(['ena', 'aen', 'answeren', 'enanswer', 'englisha']) || mrA;
+        const hiQ = getVal(['hiq', 'qhi', 'questionhi', 'hiquestion', 'hindiq']) || "";
+        const hiA = getVal(['hia', 'ahi', 'answerhi', 'hianswer', 'hindia']) || "";
+        const enQ = getVal(['enq', 'qen', 'questionen', 'enquestion', 'englishq']) || "";
+        const enA = getVal(['ena', 'aen', 'answeren', 'enanswer', 'englisha']) || "";
 
         if (mrQ || hiQ || enQ) {
           parsed.push({
@@ -621,7 +195,31 @@
     }
   }
 
-  function changeLanguage(lang) {
+  // Resolves the language text from cached sheet values or auto-translates from Marathi
+  async function resolveLocalizedQuestion(qIndex, targetLang) {
+    const item = questionsData[qIndex];
+    if (!item) return { q: "-", a: "-" };
+
+    // Use Marathi as base fallback if target language is missing
+    const baseQ = item.mr?.q || item.hi?.q || item.en?.q || "";
+    const baseA = item.mr?.a || item.hi?.a || item.en?.a || "";
+
+    if (!item[targetLang]) {
+      item[targetLang] = { q: "", a: "" };
+    }
+
+    // Auto-translate if text is empty for this language
+    if (!item[targetLang].q && baseQ) {
+      item[targetLang].q = await translateText(baseQ, targetLang);
+    }
+    if (!item[targetLang].a && baseA) {
+      item[targetLang].a = await translateText(baseA, targetLang);
+    }
+
+    return item[targetLang];
+  }
+
+  async function changeLanguage(lang) {
     if (!uiTranslations[lang]) return;
     currentLanguage = lang;
 
@@ -642,28 +240,32 @@
 
     if (currentIndex >= 0 && historyStack[currentIndex] !== undefined && questionsData.length > 0) {
       const qIndex = historyStack[currentIndex];
-      const qItem = questionsData[qIndex];
-      const langData = (qItem && qItem[currentLanguage]) ? qItem[currentLanguage] : (qItem ? qItem.mr : null);
-      
-      if (langData) {
-        questionEl.textContent = langData.q;
-        answerEl.textContent = langData.a;
-      }
+      const langData = await resolveLocalizedQuestion(qIndex, currentLanguage);
+      questionEl.textContent = langData.q;
+      answerEl.textContent = langData.a;
     }
   }
 
-  function displayCurrentQuestion() {
+  async function displayCurrentQuestion() {
     if (!questionsData || questionsData.length === 0) return;
 
     const qIndex = historyStack[currentIndex];
-    const qItem = questionsData[qIndex];
-    const langData = (qItem && qItem[currentLanguage]) ? qItem[currentLanguage] : (qItem ? qItem.mr : { q: "-", a: "-" });
-
+    
     cardEl.style.transition = "none";
     cardEl.classList.remove("is-flipped");
-    
-    questionEl.textContent = langData.q;
-    answerEl.textContent = langData.a;
+
+    // Load available text immediately or show translating state
+    const item = questionsData[qIndex];
+    if (item[currentLanguage]?.q) {
+      questionEl.textContent = item[currentLanguage].q;
+      answerEl.textContent = item[currentLanguage].a;
+    } else {
+      questionEl.textContent = uiTranslations[currentLanguage].translating;
+      answerEl.textContent = "-";
+      const resolved = await resolveLocalizedQuestion(qIndex, currentLanguage);
+      questionEl.textContent = resolved.q;
+      answerEl.textContent = resolved.a;
+    }
 
     void cardEl.offsetWidth;
     cardEl.style.transition = "transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)";
@@ -764,5 +366,3 @@
     fetchQuestions();
   });
 </script>
-</body>
-</html>
