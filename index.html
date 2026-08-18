@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Quizy - सामान्य ज्ञान</title>
+  <title>Quizy - Multi-Language Quiz</title>
   <!-- Canvas Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -31,12 +31,12 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: clamp(8px, 2.5vw, 30px);
+      padding: clamp(8px, 2.5vw, 24px);
       position: relative;
       overflow-x: hidden;
     }
 
-    /* Animated Background Doodles */
+    /* Background Doodles */
     .bg-doodles {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -63,7 +63,7 @@
       50% { transform: translateY(-15px) rotate(8deg); }
     }
 
-    /* Main Responsive Container */
+    /* Main Container */
     .app-container {
       position: relative;
       z-index: 2;
@@ -71,41 +71,103 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: clamp(16px, 2.5vw, 36px);
-      padding: clamp(16px, 3vw, 40px);
+      border-radius: clamp(16px, 2.5vw, 32px);
+      padding: clamp(14px, 2.8vw, 32px);
       width: 100%;
-      max-width: 960px;
+      max-width: 920px;
       box-shadow: 0 20px 50px rgba(0,0,0,0.4);
       text-align: center;
       color: white;
       margin: auto;
     }
 
-    /* App Title Header */
+    /* Language Switcher Bar */
+    .lang-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 14px;
+      border-radius: 18px;
+      margin-bottom: clamp(10px, 1.8vw, 16px);
+    }
+
+    .lang-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: clamp(0.8rem, 1.4vw, 1.05rem);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d3b2e;
+      box-shadow: 0 0 10px rgba(0, 184, 148, 0.6);
+    }
+
+    .lang-dropdown-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+      font-weight: 600;
+    }
+
+    .lang-select {
+      background: #1e1b4b;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: clamp(0.85rem, 1.4vw, 1rem);
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* App Title */
     .app-title {
-      font-size: clamp(1.6rem, 4vw, 3.2rem);
+      font-size: clamp(1.6rem, 3.8vw, 3rem);
       font-weight: 800;
       letter-spacing: 1.5px;
-      margin-bottom: clamp(6px, 1.2vw, 14px);
+      margin-bottom: clamp(6px, 1.2vw, 12px);
       background: linear-gradient(45deg, #a855f7, #3b82f6, #34d399);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
     }
 
-    /* 2D Student Character Animation */
+    /* Character Animation */
     .character-container {
-      width: clamp(60px, 9vw, 120px);
-      height: clamp(60px, 9vw, 120px);
-      margin: 0 auto clamp(8px, 1.5vw, 16px) auto;
+      width: clamp(60px, 8.5vw, 105px);
+      height: clamp(60px, 8.5vw, 105px);
+      margin: 0 auto clamp(8px, 1.5vw, 14px) auto;
       background: rgba(255,255,255,0.2);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      border: clamp(2px, 0.4vw, 5px) solid rgba(255,255,255,0.4);
+      border: clamp(2px, 0.4vw, 4px) solid rgba(255,255,255,0.4);
       animation: pulseCharacter 3s infinite ease-in-out;
-      font-size: clamp(2rem, 5vw, 4rem);
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
       user-select: none;
     }
 
@@ -127,24 +189,24 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: clamp(8px, 1.5vw, 16px);
+      margin-bottom: clamp(6px, 1.2vw, 14px);
       font-weight: 700;
-      font-size: clamp(0.95rem, 2vw, 1.6rem);
+      font-size: clamp(0.95rem, 1.8vw, 1.45rem);
     }
 
     .streak-badge {
       background: rgba(255, 255, 255, 0.25);
-      padding: clamp(4px, 0.8vw, 8px) clamp(10px, 1.5vw, 18px);
-      border-radius: 24px;
-      font-size: clamp(0.85rem, 1.8vw, 1.3rem);
+      padding: clamp(4px, 0.7vw, 7px) clamp(10px, 1.4vw, 16px);
+      border-radius: 20px;
+      font-size: clamp(0.85rem, 1.6vw, 1.2rem);
     }
 
     .timer-container {
       width: 100%;
-      height: clamp(8px, 1.2vw, 14px);
+      height: clamp(8px, 1.1vw, 12px);
       background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
-      margin-bottom: clamp(14px, 2.5vw, 26px);
+      margin-bottom: clamp(12px, 2.2vw, 22px);
       overflow: hidden;
     }
 
@@ -159,19 +221,19 @@
     /* 3D Flip Card */
     .card-scene {
       width: 100%;
-      min-height: clamp(170px, 26vh, 360px);
+      min-height: clamp(170px, 24vh, 320px);
       perspective: 1200px;
-      margin-bottom: clamp(16px, 2.5vw, 28px);
+      margin-bottom: clamp(14px, 2.2vw, 24px);
       cursor: pointer;
     }
 
     .card {
       width: 100%;
-      min-height: clamp(170px, 26vh, 360px);
+      min-height: clamp(170px, 24vh, 320px);
       position: relative;
       transform-style: preserve-3d;
       transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-      border-radius: clamp(14px, 2vw, 24px);
+      border-radius: clamp(14px, 2vw, 22px);
       box-shadow: 0 12px 30px rgba(0,0,0,0.3);
     }
 
@@ -186,12 +248,12 @@
       height: 100%;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      border-radius: clamp(14px, 2vw, 24px);
+      border-radius: clamp(14px, 2vw, 22px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: clamp(14px, 2.5vw, 30px);
+      padding: clamp(14px, 2.5vw, 28px);
       background: white;
       color: #2d3436;
       overflow-y: auto;
@@ -208,7 +270,7 @@
     }
 
     .card-label {
-      font-size: clamp(0.75rem, 1.4vw, 1.15rem);
+      font-size: clamp(0.75rem, 1.3vw, 1.1rem);
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: #8395a7;
@@ -217,7 +279,7 @@
     }
 
     .card-text {
-      font-size: clamp(1.15rem, 2.8vw, 2.2rem);
+      font-size: clamp(1.15rem, 2.6vw, 2.1rem);
       font-weight: 700;
       line-height: 1.4;
       text-align: center;
@@ -226,7 +288,7 @@
 
     .card-back .card-text {
       color: var(--accent);
-      font-size: clamp(1.25rem, 3.2vw, 2.5rem);
+      font-size: clamp(1.25rem, 3vw, 2.3rem);
     }
 
     /* Action Buttons */
@@ -237,10 +299,10 @@
     }
 
     .btn {
-      padding: clamp(10px, 1.6vw, 18px) clamp(8px, 1.5vw, 16px);
+      padding: clamp(10px, 1.5vw, 16px) clamp(6px, 1.2vw, 14px);
       border: none;
-      border-radius: clamp(10px, 1.5vw, 16px);
-      font-size: clamp(0.9rem, 1.6vw, 1.35rem);
+      border-radius: clamp(10px, 1.4vw, 14px);
+      font-size: clamp(0.85rem, 1.5vw, 1.25rem);
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -250,13 +312,15 @@
       justify-content: center;
       gap: 6px;
       white-space: nowrap;
+      user-select: none;
     }
 
     .btn:active { transform: scale(0.96); }
+    
     .btn:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
-      transform: none;
+      transform: none !important;
       box-shadow: none;
     }
 
@@ -271,20 +335,23 @@
 
     /* Footer Credits */
     .credits-footer {
-      margin-top: clamp(14px, 2vw, 24px);
-      font-size: clamp(0.75rem, 1.3vw, 1.05rem);
+      margin-top: clamp(12px, 1.8vw, 20px);
+      font-size: clamp(0.72rem, 1.2vw, 0.95rem);
       color: rgba(255, 255, 255, 0.85);
       line-height: 1.4;
       border-top: 1px solid rgba(255, 255, 255, 0.2);
-      padding-top: clamp(10px, 1.5vw, 16px);
+      padding-top: clamp(8px, 1.4vw, 14px);
     }
 
     .credits-footer strong {
       color: #ffffff;
     }
 
-    /* Small Mobile Specific Adjustments */
-    @media (max-width: 540px) {
+    /* Small Screen Stack */
+    @media (max-width: 580px) {
+      .lang-bar {
+        justify-content: center;
+      }
       .button-group {
         grid-template-columns: 1fr 1fr;
       }
@@ -294,17 +361,15 @@
       }
     }
 
-    /* Large Interactive Screens / Displays */
     @media (min-width: 1400px) {
       .app-container {
-        max-width: 1100px;
+        max-width: 1050px;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Animated background doodles -->
 <div class="bg-doodles">
   <div class="doodle">📚</div>
   <div class="doodle">💡</div>
@@ -314,17 +379,32 @@
 </div>
 
 <div class="app-container" id="app">
+  <!-- Top Language Selector Toolbar -->
+  <div class="lang-bar">
+    <div class="lang-buttons">
+      <button class="lang-btn active" id="btn-lang-mr" onclick="changeLanguage('mr')">मराठी</button>
+      <button class="lang-btn" id="btn-lang-hi" onclick="changeLanguage('hi')">हिन्दी</button>
+      <button class="lang-btn" id="btn-lang-en" onclick="changeLanguage('en')">English</button>
+    </div>
+    <div class="lang-dropdown-container">
+      <span>🌐</span>
+      <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
+        <option value="mr" selected>मराठी (Marathi)</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+  </div>
+
   <!-- App Title -->
   <h1 class="app-title">Quizy 🧠</h1>
 
-  <!-- 2D Student Avatar -->
-  <div class="character-container" id="student-avatar">
-    🧑‍🎓
-  </div>
+  <!-- 2D Avatar -->
+  <div class="character-container" id="student-avatar">🧑‍🎓</div>
 
   <div class="header">
     <div>⏱️ <span id="timer-text">60</span>s</div>
-    <div class="streak-badge">⚡ Streak: <span id="streak">0</span></div>
+    <div class="streak-badge">⚡ <span id="lbl-streak">गुण</span>: <span id="streak">0</span></div>
   </div>
 
   <div class="timer-container">
@@ -335,30 +415,258 @@
   <div class="card-scene" onclick="flipCard()">
     <div class="card" id="card">
       <div class="card-face card-front">
-        <div class="card-label">प्रश्न (Question)</div>
+        <div class="card-label" id="lbl-question">प्रश्न</div>
         <div class="card-text" id="question">लोड होत आहे...</div>
       </div>
       <div class="card-face card-back">
-        <div class="card-label">उत्तर (Answer)</div>
+        <div class="card-label" id="lbl-answer">उत्तर</div>
         <div class="card-text" id="answer">-</div>
       </div>
     </div>
   </div>
 
-  <!-- Action Buttons -->
+  <!-- Navigation Action Buttons -->
   <div class="button-group">
     <button class="btn btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>⬅️ मागील प्रश्न</button>
-    <button class="btn btn-show" onclick="flipCard()">👁️ उत्तर पाहा</button>
-    <button class="btn btn-next" onclick="nextQuestion()">पुढील प्रश्न ➡️</button>
+    <button class="btn btn-show" id="btn-show" onclick="flipCard()">👁️ उत्तर पाहा</button>
+    <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">पुढील प्रश्न ➡️</button>
   </div>
 
-  <!-- Credits Footer -->
+  <!-- Footer Credits -->
   <div class="credits-footer">
     © <strong>Vrushabh H. Borkar</strong><br>
-    Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)
+    <span id="lbl-designation">Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)</span>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+  // UI Translations
+  const uiTranslations = {
+    mr: {
+      lblQuestion: "प्रश्न (Question)",
+      lblAnswer: "उत्तर (Answer)",
+      btnPrev: "⬅️ मागील प्रश्न",
+      btnShow: "👁️ उत्तर पाहा",
+      btnNext: "पुढील प्रश्न ➡️",
+      lblStreak: "गुण",
+      loading: "लोड होत आहे..."
+    },
+    hi: {
+      lblQuestion: "प्रश्न (Question)",
+      lblAnswer: "उत्तर (Answer)",
+      btnPrev: "⬅️ पिछला प्रश्न",
+      btnShow: "👁️ उत्तर देखें",
+      btnNext: "अगला प्रश्न ➡️",
+      lblStreak: "स्कोर",
+      loading: "लोड हो रहा है..."
+    },
+    en: {
+      lblQuestion: "Question",
+      lblAnswer: "Answer",
+      btnPrev: "⬅️ Previous",
+      btnShow: "👁️ View Answer",
+      btnNext: "Next ➡️",
+      lblStreak: "Streak",
+      loading: "Loading..."
+    }
+  };
+
+  // Multilingual Question Bank
+  const questionsData = [
+    {
+      mr: { q: "महाराष्ट्राची उपराजधानी कोणती आहे?", a: "नागपूर" },
+      hi: { q: "महाराष्ट्र की उप-राजधानी कौन सी है?", a: "नागपुर" },
+      en: { q: "Which city is the sub-capital of Maharashtra?", a: "Nagpur" }
+    },
+    {
+      mr: { q: "सूर्यमालेतील सर्वात मोठा ग्रह कोणता?", a: "गुरु (Jupiter)" },
+      hi: { q: "सौरमंडल का सबसे बड़ा ग्रह कौन सा है?", a: "बृहस्पति (Jupiter)" },
+      en: { q: "Which is the largest planet in our Solar System?", a: "Jupiter" }
+    },
+    {
+      mr: { q: "मानवी शरीरात एकूण किती हाडे असतात?", a: "२०६" },
+      hi: { q: "मानव शरीर में कुल कितनी हड्डियाँ होती हैं?", a: "२०६" },
+      en: { q: "How many bones are there in the human body?", a: "206" }
+    },
+    {
+      mr: { q: "भारताचे 'मिसाईल मॅन' कोणाला म्हणतात?", a: "डॉ. ए. पी. जे. अब्दुल कलाम" },
+      hi: { q: "भारत का 'मिसाइल मैन' किसे कहा जाता है?", a: "डॉ. ए. पी. जे. अब्दुल कलाम" },
+      en: { q: "Who is known as the 'Missile Man of India'?", a: "Dr. A.P.J. Abdul Kalam" }
+    },
+    {
+      mr: { q: "पाण्याचे रासायनिक सूत्र काय आहे?", a: "H₂O" },
+      hi: { q: "पानी का रासायनिक सूत्र क्या है?", a: "H₂O" },
+      en: { q: "What is the chemical formula of water?", a: "H₂O" }
+    },
+    {
+      mr: { q: "महाराष्ट्रातील सर्वोच्च शिखर कोणते आहे?", a: "कळसूबाई (१६४६ मी)" },
+      hi: { q: "महाराष्ट्र का सबसे ऊँचा शिखर कौन सा है?", a: "कलसूबाई (1646 मी)" },
+      en: { q: "Which is the highest peak in Maharashtra?", a: "Kalsubai (1646 m)" }
+    },
+    {
+      mr: { q: "भारताचा राष्ट्रीय प्राणी कोणता आहे?", a: "वाघ" },
+      hi: { q: "भारत का राष्ट्रीय पशु कौन सा है?", a: "बाघ" },
+      en: { q: "What is the national animal of India?", a: "Tiger" }
+    },
+    {
+      mr: { q: "झाडांची पाने हिरवी कशामुळे दिसतात?", a: "हरितद्रव्य (क्लोरोफिल)" },
+      hi: { q: "पेड़ों की पत्तियाँ हरी क्यों दिखाई देती हैं?", a: "क्लोरोफिल (हरितलवक)" },
+      en: { q: "Why do plant leaves appear green?", a: "Chlorophyll" }
+    }
+  ];
+
+  // State Variables
+  let currentLanguage = 'mr';
+  let historyStack = []; // Stores question item indices
+  let currentIndex = -1;
+  let timer = 60;
+  let timerInterval = null;
+  let streak = 0;
+
+  // DOM Elements
+  const questionEl = document.getElementById("question");
+  const answerEl = document.getElementById("answer");
+  const cardEl = document.getElementById("card");
+  const timerText = document.getElementById("timer-text");
+  const timerBar = document.getElementById("timer-bar");
+  const streakEl = document.getElementById("streak");
+  const prevBtn = document.getElementById("btn-prev");
+  const showBtn = document.getElementById("btn-show");
+  const nextBtn = document.getElementById("btn-next");
+  const avatar = document.getElementById("student-avatar");
+  const langSelect = document.getElementById("lang-select");
+  const lblQuestion = document.getElementById("lbl-question");
+  const lblAnswer = document.getElementById("lbl-answer");
+  const lblStreak = document.getElementById("lbl-streak");
+
+  function changeLanguage(lang) {
+    if (!uiTranslations[lang]) return;
+    currentLanguage = lang;
+
+    // Update Dropdown
+    langSelect.value = lang;
+
+    // Update Language Buttons Active State
+    document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
+    const activeBtn = document.getElementById(`btn-lang-${lang}`);
+    if (activeBtn) activeBtn.classList.add("active");
+
+    // Update Static UI Text
+    lblQuestion.textContent = uiTranslations[lang].lblQuestion;
+    lblAnswer.textContent = uiTranslations[lang].lblAnswer;
+    btnPrev.textContent = uiTranslations[lang].btnPrev;
+    btnShow.textContent = uiTranslations[lang].btnShow;
+    btnNext.textContent = uiTranslations[lang].btnNext;
+    lblStreak.textContent = uiTranslations[lang].lblStreak;
+
+    // Refresh Current Question in selected language
+    if (currentIndex >= 0 && historyStack[currentIndex] !== undefined) {
+      const qIndex = historyStack[currentIndex];
+      const qData = questionsData[qIndex][currentLanguage];
+      questionEl.textContent = qData.q;
+      answerEl.textContent = qData.a;
+    }
+  }
+
+  function displayCurrentQuestion() {
+    cardEl.classList.remove("is-flipped");
+    
+    const qIndex = historyStack[currentIndex];
+    const qData = questionsData[qIndex][currentLanguage];
+    
+    questionEl.textContent = qData.q;
+    answerEl.textContent = qData.a;
+
+    // Toggle Previous Button
+    prevBtn.disabled = (currentIndex <= 0);
+
+    resetTimer();
+  }
+
+  function nextQuestion() {
+    if (currentIndex < historyStack.length - 1) {
+      // Step forward in history
+      currentIndex++;
+    } else {
+      // Select new question index without immediate repetition
+      let newIndex = Math.floor(Math.random() * questionsData.length);
+      if (historyStack.length > 0 && questionsData.length > 1) {
+        while (newIndex === historyStack[currentIndex]) {
+          newIndex = Math.floor(Math.random() * questionsData.length);
+        }
+      }
+      historyStack.push(newIndex);
+      currentIndex++;
+    }
+
+    displayCurrentQuestion();
+  }
+
+  function prevQuestion() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      displayCurrentQuestion();
+    }
+  }
+
+  function flipCard() {
+    const isFlipped = cardEl.classList.toggle("is-flipped");
+
+    if (isFlipped) {
+      streak++;
+      streakEl.textContent = streak;
+      avatar.classList.add("character-happy");
+      avatar.textContent = "🥳";
+
+      if (typeof confetti === "function") {
+        confetti({
+          particleCount: 45,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      }
+
+      setTimeout(() => {
+        avatar.classList.remove("character-happy");
+        avatar.textContent = "🧑‍🎓";
+      }, 1400);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timer = 60;
+    updateTimerUI();
+
+    timerInterval = setInterval(() => {
+      timer--;
+      updateTimerUI();
+
+      if (timer <= 0) {
+        clearInterval(timerInterval);
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    timerText.textContent = timer;
+    const percentage = (timer / 60) * 100;
+    timerBar.style.width = percentage + "%";
+
+    if (timer > 30) {
+      timerBar.style.backgroundColor = "var(--accent)";
+    } else if (timer > 10) {
+      timerBar.style.backgroundColor = "var(--warning)";
+    } else {
+      timerBar.style.backgroundColor = "var(--danger)";
+    }
+  }
+
+  // Initialize on page load
+  window.addEventListener("DOMContentLoaded", () => {
+    changeLanguage('mr');
+    nextQuestion();
+  });
+</script>
 </body>
 </html>
