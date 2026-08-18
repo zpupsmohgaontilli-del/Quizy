@@ -347,7 +347,6 @@
       color: #ffffff;
     }
 
-    /* Small Screen Stack */
     @media (max-width: 580px) {
       .lang-bar {
         justify-content: center;
@@ -517,7 +516,7 @@
 
   // State Variables
   let currentLanguage = 'mr';
-  let historyStack = []; // Stores question item indices
+  let historyStack = [];
   let currentIndex = -1;
   let timer = 60;
   let timerInterval = null;
@@ -546,7 +545,7 @@
     // Update Dropdown
     langSelect.value = lang;
 
-    // Update Language Buttons Active State
+    // Update Language Buttons
     document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
     const activeBtn = document.getElementById(`btn-lang-${lang}`);
     if (activeBtn) activeBtn.classList.add("active");
@@ -554,9 +553,9 @@
     // Update Static UI Text
     lblQuestion.textContent = uiTranslations[lang].lblQuestion;
     lblAnswer.textContent = uiTranslations[lang].lblAnswer;
-    btnPrev.textContent = uiTranslations[lang].btnPrev;
-    btnShow.textContent = uiTranslations[lang].btnShow;
-    btnNext.textContent = uiTranslations[lang].btnNext;
+    prevBtn.textContent = uiTranslations[lang].btnPrev;
+    showBtn.textContent = uiTranslations[lang].btnShow;
+    nextBtn.textContent = uiTranslations[lang].btnNext;
     lblStreak.textContent = uiTranslations[lang].lblStreak;
 
     // Refresh Current Question in selected language
@@ -569,13 +568,22 @@
   }
 
   function displayCurrentQuestion() {
-    cardEl.classList.remove("is-flipped");
-    
     const qIndex = historyStack[currentIndex];
     const qData = questionsData[qIndex][currentLanguage];
+
+    // Disable transition temporarily to prevent visible flip-back
+    cardEl.style.transition = "none";
+    cardEl.classList.remove("is-flipped");
     
+    // Set question and answer text
     questionEl.textContent = qData.q;
     answerEl.textContent = qData.a;
+
+    // Trigger DOM reflow to apply the un-flipped state immediately
+    void cardEl.offsetWidth;
+
+    // Re-enable smooth transition for future card flips
+    cardEl.style.transition = "transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)";
 
     // Toggle Previous Button
     prevBtn.disabled = (currentIndex <= 0);
