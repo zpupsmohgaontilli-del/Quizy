@@ -238,7 +238,7 @@
       © <strong>Vrushabh H. Borkar</strong> | Graduate Teacher, ZP Upper Primary School, Mohgaon (Tilli)
     </div>
     <div class="visitor-badge-footer">
-      👥 एकूण भेट देणारे: <strong id="visitor-count">...</strong>
+      👥 एकूण भेट देणारे: <strong id="visitor-count">लोड होत आहे...</strong>
     </div>
   </div>
 </div>
@@ -266,19 +266,31 @@
   const avatar = document.getElementById("student-avatar");
   const visitorCountEl = document.getElementById("visitor-count");
 
+  // Fetch and increment visitor count via Google Apps Script (JSONP to bypass CORS)
   function fetchVisitorCount() {
-    fetch("https://api.counterapi.dev/v1/quizy_app_mohgaon/visits/up")
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.count !== undefined) {
-          visitorCountEl.textContent = Number(data.count).toLocaleString('mr-IN');
-        } else {
-          visitorCountEl.textContent = "-";
-        }
-      })
-      .catch(() => {
-        visitorCountEl.textContent = "-";
-      });
+    const callbackName = "handleVisitorJSONP_" + Math.round(100000 * Math.random());
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      const el = document.getElementById("jsonp-visitor");
+      if (el) document.body.removeChild(el);
+      
+      if (data && data.count !== undefined) {
+        visitorCountEl.textContent = Number(data.count).toLocaleString('mr-IN');
+      } else {
+        visitorCountEl.textContent = "1";
+      }
+    };
+
+    const script = document.createElement("script");
+    script.id = "jsonp-visitor";
+    script.src = API_URL + (API_URL.indexOf("?") >= 0 ? "&" : "?") + "action=visit&callback=" + callbackName;
+    script.onerror = function() {
+      // Fallback in case Apps Script is offline
+      let localCount = Number(localStorage.getItem("quizy_local_visits") || 0) + 1;
+      localStorage.setItem("quizy_local_visits", localCount);
+      visitorCountEl.textContent = localCount.toLocaleString('mr-IN');
+    };
+    document.body.appendChild(script);
   }
 
   function extractString(val) {
