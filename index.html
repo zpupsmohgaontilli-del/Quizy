@@ -266,7 +266,6 @@
   const avatar = document.getElementById("student-avatar");
   const visitorCountEl = document.getElementById("visitor-count");
 
-  // Real-time visitor counter using CounterAPI
   function fetchVisitorCount() {
     fetch("https://api.counterapi.dev/v1/quizy_app_mohgaon/visits/up")
       .then(res => res.json())
@@ -313,19 +312,26 @@
         q = extractString(item[0]);
         a = extractString(item[1]);
       } else if (typeof item === 'object') {
-        const keys = Object.keys(item);
-        const getVal = (patterns) => {
-          for (const p of patterns) {
-            const found = keys.find(k => k.trim().toLowerCase().replace(/[^a-z0-9]/g, '') === p);
-            if (found && item[found] !== undefined && item[found] !== null) {
-              return extractString(item[found]);
+        const langObj = item.mr || item.marathi || item.hi || item.en;
+
+        if (langObj && typeof langObj === 'object') {
+          q = extractString(langObj.q || langObj.question || langObj.mr_q || langObj['प्रश्न']);
+          a = extractString(langObj.a || langObj.answer || langObj.mr_a || langObj['उत्तर']);
+        }
+
+        if (!q || !a) {
+          const keys = Object.keys(item);
+          for (const key of keys) {
+            const k = key.trim().toLowerCase();
+            const val = item[key];
+            if (!q && (k.includes('q') || k.includes('प्रश्न') || k.includes('question'))) {
+              q = typeof val === 'object' ? extractString(val.q || val.question || val) : extractString(val);
+            }
+            if (!a && (k.includes('a') || k.includes('उत्तर') || k.includes('ans') || k.includes('answer'))) {
+              a = typeof val === 'object' ? extractString(val.a || val.answer || val) : extractString(val);
             }
           }
-          return "";
-        };
-
-        q = getVal(['mrq', 'qmr', 'questionmr', 'mrquestion', 'marathiq', 'q', 'question', 'प्रश्न']);
-        a = getVal(['mra', 'amr', 'answermr', 'mranswer', 'marathia', 'a', 'answer', 'उत्तर']);
+        }
 
         if (!q && keys.length >= 2) {
           q = extractString(item[keys[0]]);
